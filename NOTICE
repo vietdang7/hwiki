@@ -1,0 +1,19 @@
+hermes-wikiskill
+================
+
+This distribution is derived from WikiSkill (PyPI `wikiskill` 0.1.5,
+https://github.com/ashutoshsinghpr7/wikiskill, commit cdc291c), an
+implementation of "WikiSkill" (arXiv:2608.27454), released under the MIT
+License. The upstream copyright notice is retained in LICENSE.
+
+Kept from upstream: the paper's Algorithm 1 (train rollouts -> wiki maintainer
+-> skill proposer -> validation gate accepting iff R_val > R_best, rollback of
+skills only), the workspace layout, the task/grader schema, the maintainer and
+proposer role skills, and the CLI verbs.
+
+Changed: Hermes-only backend with skills visibility verification, pure
+dry-runs, minimal per-run credentials, Hermes feature detection, held-out
+evaluation, workspace locking, path containment, checked git operations,
+train-only grader feedback. See README.md (defects D1-D18, plus sealed val/test answer keys); every fix is pinned by tests/.
+Dropped: the claude/codex/copilot backends and the upstream demo bench
+generator (replaced by the bundled house-report bench).

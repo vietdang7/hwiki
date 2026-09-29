@@ -1,0 +1,198 @@
+[
+  {
+    "id": "train-sales-01",
+    "split": "train",
+    "title": "ACME sales summary 01",
+    "prompt": "Create report.txt for report id train-sales-01, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\ntrain-sales-01-r06,West,1675,posted\ntrain-sales-01-r04,East,1275,posted\ntrain-sales-01-r07,East,3975,void\ntrain-sales-01-r02,North,2075,posted\ntrain-sales-01-r01,North,1575,posted\ntrain-sales-01-r03,East,2175,posted\ntrain-sales-01-r05,West,1975,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-SALES-01 ==\nNorth | 36.50\nWest | 36.50\nEast | 34.50\nTOTAL | 107.50\n"
+    }
+  },
+  {
+    "id": "train-sales-02",
+    "split": "train",
+    "title": "ACME sales summary 02",
+    "prompt": "Create report.txt for report id train-sales-02, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\ntrain-sales-02-r06,West,6746,posted\ntrain-sales-02-r01,North,6646,posted\ntrain-sales-02-r04,East,6346,posted\ntrain-sales-02-r07,East,9046,void\ntrain-sales-02-r02,North,7146,posted\ntrain-sales-02-r05,West,7046,posted\ntrain-sales-02-r03,East,7246,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-SALES-02 ==\nNorth | 137.92\nWest | 137.92\nEast | 135.92\nTOTAL | 411.76\n"
+    }
+  },
+  {
+    "id": "train-sales-03",
+    "split": "train",
+    "title": "ACME sales summary 03",
+    "prompt": "Create report.txt for report id train-sales-03, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\ntrain-sales-03-r02,North,12018,posted\ntrain-sales-03-r06,West,11618,posted\ntrain-sales-03-r05,West,11918,posted\ntrain-sales-03-r07,East,13918,void\ntrain-sales-03-r04,East,11218,posted\ntrain-sales-03-r03,East,12118,posted\ntrain-sales-03-r01,North,11518,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-SALES-03 ==\nNorth | 235.36\nWest | 235.36\nEast | 233.36\nTOTAL | 704.08\n"
+    }
+  },
+  {
+    "id": "train-expenses-01",
+    "split": "train",
+    "title": "ACME expenses summary 01",
+    "prompt": "Create report.txt for report id train-expenses-01, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"train-expenses-01-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 16736,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-01-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 19036,\n      \"status\": \"void\"\n    },\n    {\n      \"record_id\": \"train-expenses-01-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 16336,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-01-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 17136,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-01-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 16636,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-01-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 17036,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-01-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 17236,\n      \"status\": \"approved\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-EXPENSES-01 ==\nSoftware | 337.72\nTravel | 337.72\nMeals | 335.72\nTOTAL | 1011.16\n"
+    }
+  },
+  {
+    "id": "train-expenses-02",
+    "split": "train",
+    "title": "ACME expenses summary 02",
+    "prompt": "Create report.txt for report id train-expenses-02, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"train-expenses-02-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 21346,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-02-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 24046,\n      \"status\": \"void\"\n    },\n    {\n      \"record_id\": \"train-expenses-02-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 21646,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-02-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 21746,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-02-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 22046,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-02-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 22146,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-02-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 22246,\n      \"status\": \"approved\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-EXPENSES-02 ==\nSoftware | 437.92\nTravel | 437.92\nMeals | 435.92\nTOTAL | 1311.76\n"
+    }
+  },
+  {
+    "id": "train-expenses-03",
+    "split": "train",
+    "title": "ACME expenses summary 03",
+    "prompt": "Create report.txt for report id train-expenses-03, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"train-expenses-03-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 26749,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-03-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 26349,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-03-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 27249,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-03-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 27049,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-03-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 27149,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-03-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 26649,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"train-expenses-03-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 29049,\n      \"status\": \"void\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-EXPENSES-03 ==\nSoftware | 537.98\nTravel | 537.98\nMeals | 535.98\nTOTAL | 1611.94\n"
+    }
+  },
+  {
+    "id": "train-orders-01",
+    "split": "train",
+    "title": "ACME orders summary 01",
+    "prompt": "Create report.txt for report id train-orders-01, following the ACME house report format. Summarize the orders by team from orders.jsonl. Return only the report contents.",
+    "sandbox": {
+      "orders.jsonl": "{\"amount_cents\": 31964, \"record_id\": \"train-orders-01-r02\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 31864, \"record_id\": \"train-orders-01-r05\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 33864, \"record_id\": \"train-orders-01-r07\", \"status\": \"void\", \"team\": \"Gold\"}\n{\"amount_cents\": 32064, \"record_id\": \"train-orders-01-r03\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 31564, \"record_id\": \"train-orders-01-r06\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 31464, \"record_id\": \"train-orders-01-r01\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 31164, \"record_id\": \"train-orders-01-r04\", \"status\": \"complete\", \"team\": \"Gold\"}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-ORDERS-01 ==\nBlue | 634.28\nRed | 634.28\nGold | 632.28\nTOTAL | 1900.84\n"
+    }
+  },
+  {
+    "id": "train-orders-02",
+    "split": "train",
+    "title": "ACME orders summary 02",
+    "prompt": "Create report.txt for report id train-orders-02, following the ACME house report format. Summarize the orders by team from orders.jsonl. Return only the report contents.",
+    "sandbox": {
+      "orders.jsonl": "{\"amount_cents\": 38859, \"record_id\": \"train-orders-02-r07\", \"status\": \"void\", \"team\": \"Gold\"}\n{\"amount_cents\": 36559, \"record_id\": \"train-orders-02-r06\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 37059, \"record_id\": \"train-orders-02-r03\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 36159, \"record_id\": \"train-orders-02-r04\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 36459, \"record_id\": \"train-orders-02-r01\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 36959, \"record_id\": \"train-orders-02-r02\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 36859, \"record_id\": \"train-orders-02-r05\", \"status\": \"complete\", \"team\": \"Red\"}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected": "== TRAIN-ORDERS-02 ==\nBlue | 734.18\nRed | 734.18\nGold | 732.18\nTOTAL | 2200.54\n"
+    }
+  },
+  {
+    "id": "val-sales-01",
+    "split": "val",
+    "title": "ACME sales summary 01",
+    "prompt": "Create report.txt for report id val-sales-01, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\nval-sales-01-r04,East,120209,posted\nval-sales-01-r05,West,120909,posted\nval-sales-01-r02,North,121009,posted\nval-sales-01-r03,East,121109,posted\nval-sales-01-r07,East,122909,void\nval-sales-01-r06,West,120609,posted\nval-sales-01-r01,North,120509,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "4dd17bfa90ee4e36066ed7ac99b67c1b533d7851362bf7dbe5e46ce2d0064425"
+    }
+  },
+  {
+    "id": "val-sales-02",
+    "split": "val",
+    "title": "ACME sales summary 02",
+    "prompt": "Create report.txt for report id val-sales-02, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\nval-sales-02-r04,East,125259,posted\nval-sales-02-r05,West,125959,posted\nval-sales-02-r07,East,127959,void\nval-sales-02-r03,East,126159,posted\nval-sales-02-r06,West,125659,posted\nval-sales-02-r01,North,125559,posted\nval-sales-02-r02,North,126059,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "5b0e2e264d23a4fcb9556310b8c943294fac5dfe5f98bd4366b2a57ff9b52537"
+    }
+  },
+  {
+    "id": "val-expenses-01",
+    "split": "val",
+    "title": "ACME expenses summary 01",
+    "prompt": "Create report.txt for report id val-expenses-01, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"val-expenses-01-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 130347,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-01-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 133047,\n      \"status\": \"void\"\n    },\n    {\n      \"record_id\": \"val-expenses-01-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 131247,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-01-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 131147,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-01-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 130747,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-01-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 131047,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-01-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 130647,\n      \"status\": \"approved\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "67888d5865de4c4d001d36f31d6b38b631e7a95da655340a0d0272edd5350d3d"
+    }
+  },
+  {
+    "id": "val-expenses-02",
+    "split": "val",
+    "title": "ACME expenses summary 02",
+    "prompt": "Create report.txt for report id val-expenses-02, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"val-expenses-02-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 135571,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-02-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 136071,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-02-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 135871,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-02-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 135171,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-02-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 135471,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-02-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 135971,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"val-expenses-02-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 137871,\n      \"status\": \"void\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "1311dc9fcf17be4fdb011d84fdb90583078522616d1391318ec289dd7b1574d1"
+    }
+  },
+  {
+    "id": "val-orders-01",
+    "split": "val",
+    "title": "ACME orders summary 01",
+    "prompt": "Create report.txt for report id val-orders-01, following the ACME house report format. Summarize the orders by team from orders.jsonl. Return only the report contents.",
+    "sandbox": {
+      "orders.jsonl": "{\"amount_cents\": 140300, \"record_id\": \"val-orders-01-r04\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 140700, \"record_id\": \"val-orders-01-r06\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 143000, \"record_id\": \"val-orders-01-r07\", \"status\": \"void\", \"team\": \"Gold\"}\n{\"amount_cents\": 141100, \"record_id\": \"val-orders-01-r02\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 140600, \"record_id\": \"val-orders-01-r01\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 141000, \"record_id\": \"val-orders-01-r05\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 141200, \"record_id\": \"val-orders-01-r03\", \"status\": \"complete\", \"team\": \"Gold\"}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "3a3aeb0b06c9dd801a5c1f6ecdb0a4bf8a9bd9aa5d7f054b8dd7b6caf2a66c56"
+    }
+  },
+  {
+    "id": "val-orders-02",
+    "split": "val",
+    "title": "ACME orders summary 02",
+    "prompt": "Create report.txt for report id val-orders-02, following the ACME house report format. Summarize the orders by team from orders.jsonl. Return only the report contents.",
+    "sandbox": {
+      "orders.jsonl": "{\"amount_cents\": 147840, \"record_id\": \"val-orders-02-r07\", \"status\": \"void\", \"team\": \"Gold\"}\n{\"amount_cents\": 145540, \"record_id\": \"val-orders-02-r06\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 145140, \"record_id\": \"val-orders-02-r04\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 145940, \"record_id\": \"val-orders-02-r02\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 145440, \"record_id\": \"val-orders-02-r01\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 146040, \"record_id\": \"val-orders-02-r03\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 145840, \"record_id\": \"val-orders-02-r05\", \"status\": \"complete\", \"team\": \"Red\"}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "edb57d7354203c311ad038fb13b8795ad9cecf9da0c573e502947e3c74e795ae"
+    }
+  }
+]

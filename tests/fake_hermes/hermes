@@ -1,0 +1,333 @@
+#!/usr/bin/env python3
+"""Fake `hermes` for offline tests (INTERFACE §5). Mirrors the Hermes v0.21.3 facts in
+research/R1-qa.md that the framework depends on:
+
+- `chat --help` lists flags per FAKE_HERMES_FLAGS = v0.21 (default) | old (no --query-file
+  --oneshot --run-budget --in, like <= v0.19) | noskills (no -t);
+- unknown chat flags -> argparse "unrecognized arguments", exit 2;
+- the skills index `<available_skills>` is rendered into the session system prompt ONLY
+  when a skills toolset is enabled and not disabled by config agent.disabled_toolsets;
+- `-Q` prints the final text on stdout and `session_id: <id>` on STDERR only;
+- `sessions export --format jsonl --session-id ID OUT` writes one session object line.
+
+Behaviour knobs: FAKE_HERMES_LOG (argv/env log, secret values masked), FAKE_HERMES_EXIT,
+FAKE_HERMES_HIDE_SKILLS, FAKE_HERMES_ANSWERS (json {task_id: {file: content}}; a task is
+solved when a visible skill contains FAKE-SOLVE, which the agent skill_view's first, or
+FAKE_HERMES_ALWAYS_SOLVE=1), FAKE_HERMES_PROPOSAL (json | "none"), FAKE_HERMES_COST,
+FAKE_HERMES_ROLE_READ ("maintainer:<path>" | "proposer:<path>": that role read_file's the path —
+QA-F7 held-out contamination; the result carries the file text like Hermes),
+FAKE_HERMES_ROLE_CALLS (json [[role, tool, args], ...]: extra typed calls of that role — QA-F8/F9;
+a write_file call with "content" really writes it, relative paths against the run's cwd — T9),
+FAKE_HERMES_ROLE_EXIT ("maintainer:<code>" | "proposer:<code>": that role exits <code> AFTER its
+session is stored, like an interrupted / OOM-killed run — T9 R1-01),
+FAKE_HERMES_SLEEP + FAKE_HERMES_PIDFILE (write the pid, then sleep that many seconds — T9 R1-18).
+"""
+import argparse
+import json
+import os
+import re
+import sys
+import time
+import uuid
+
+SECRET = re.compile(r"(KEY|TOKEN|SECRET|PASSWORD)", re.I)
+
+
+def log(extra=None):
+    path = os.environ.get("FAKE_HERMES_LOG")
+    if not path:
+        return
+    env = {k: ("***" if SECRET.search(k) else v) for k, v in os.environ.items()
+           if k.startswith(("HERMES", "HWS", "DEEPSEEK", "TELEGRAM", "GROQ"))}
+    sk = os.path.join(os.environ.get("HERMES_HOME", ""), "skills")
+    links = sorted(n for n in (os.listdir(sk) if os.path.isdir(sk) else [])
+                   if os.path.islink(os.path.join(sk, n)))
+    rec = {"argv": sys.argv[1:], "cwd": os.getcwd(), "env": env, "skill_links": links,
+           "env_names": sorted(os.environ), "home_env": os.environ.get("HOME")}  # names only (QA-F3)
+    try:  # which provider key the run's home carries (hash only, never the value)
+        import hashlib
+        for line in open(os.path.join(os.environ.get("HERMES_HOME", ""), ".env"), encoding="utf-8"):
+            if line.startswith("DEEPSEEK_API_KEY="):
+                rec["home_key_sha256"] = hashlib.sha256(line.split("=", 1)[1].strip().encode()).hexdigest()
+    except OSError:
+        pass
+    rec.update(extra or {})
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(rec) + "\n")
+
+
+def home():
+    h = os.environ.get("HERMES_HOME")
+    if not h or os.path.realpath(h) == os.path.realpath(os.path.expanduser("~/.hermes")):
+        print("fake-hermes: refusing to run against the ambient ~/.hermes", file=sys.stderr)
+        sys.exit(97)
+    return h
+
+
+def flags_profile():
+    return os.environ.get("FAKE_HERMES_FLAGS", "v0.21")
+
+
+def chat_parser():
+    p = argparse.ArgumentParser(prog="hermes chat")
+    prof = flags_profile()
+    g = p.add_mutually_exclusive_group()
+    g.add_argument("-q", "--query")
+    if prof != "old":
+        g.add_argument("--query-file")
+        p.add_argument("--oneshot", action="store_true")
+        p.add_argument("--run-budget", type=int)
+        p.add_argument("--in", dest="in_dir")
+    p.add_argument("-Q", "--quiet", action="store_true")
+    if prof != "noskills":
+        p.add_argument("-t", "--toolsets")
+    p.add_argument("--max-turns")
+    p.add_argument("-m", "--model")
+    return p
+
+
+def read_skills(h):
+    root = os.path.join(h, "skills")
+    out = []
+    if not os.path.isdir(root):
+        return out
+    for d in sorted(os.listdir(root)):
+        f = os.path.join(root, d, "SKILL.md")
+        if not os.path.isfile(f):
+            continue
+        text = open(f, encoding="utf-8").read()
+        m = re.search(r"^name:\s*(\S+)", text, re.M)
+        dm = re.search(r"^description:\s*(.+)$", text, re.M)
+        out.append({"name": m.group(1) if m else d, "desc": (dm.group(1).strip("\"' ") if dm else ""),
+                    "text": text})
+    return out
+
+
+def skills_enabled(h, toolsets):
+    names = [t.strip() for t in (toolsets or "").split(",") if t.strip()] if toolsets else ["all"]
+    enabled = "all" in names or "skills" in names
+    try:
+        cfg = open(os.path.join(h, "config.yaml"), encoding="utf-8").read()
+    except OSError:
+        cfg = ""
+    m = re.search(r"disabled_toolsets:\s*(\[.*?\]|(?:\n\s+-\s*\S+)+)", cfg)
+    if m and "skills" in m.group(1):
+        enabled = False
+    return enabled and not os.environ.get("FAKE_HERMES_HIDE_SKILLS")
+
+
+def render_index(skills):
+    lines = ["## Skills", "Scan the skills below and load one with skill_view(name) only when it "
+             "carries domain knowledge you lack for THIS task.", "<available_skills>"]
+    for s in skills:
+        lines.append(f"  {s['name']}: {s['desc']}")
+        lines.append(f"    - {s['name']}: {s['desc']}")
+    lines.append("</available_skills>")
+    return "\n".join(lines)
+
+
+def call(name, args):
+    # host-confirmed shape (DECISIONS [qa] export shape): id, call_id, type, function{name, arguments:str}
+    cid = "call_" + uuid.uuid4().hex[:8]
+    return {"id": cid, "call_id": cid, "type": "function",
+            "function": {"name": name, "arguments": json.dumps(args)}}
+
+
+BASE = [os.getcwd()]  # the run's cwd (--in dir when given)
+
+
+def role_of(prompt):
+    return "maintainer" if "Wiki Maintainer" in prompt else "proposer" if "Skill Proposer" in prompt else None
+
+
+def act(prompt, workdir, visible, messages):
+    """Pretend-agent: maintainer / proposer / task solver."""
+    calls = []
+    role_read = os.environ.get("FAKE_HERMES_ROLE_READ", "")
+    if ":" in role_read:
+        role, path = role_read.split(":", 1)
+        if ("Wiki Maintainer" if role == "maintainer" else "Skill Proposer") in prompt:
+            calls.append(call("read_file", {"path": path}))
+    for role, tool, targs in json.loads(os.environ.get("FAKE_HERMES_ROLE_CALLS") or "[]"):
+        if ("Wiki Maintainer" if role == "maintainer" else "Skill Proposer") in prompt:
+            calls.append(call(tool, targs))  # QA-F8/F9: arbitrary typed role calls
+            if tool == "write_file" and "content" in targs:  # T9: the write really lands
+                p = os.path.join(BASE[0], targs["path"])
+                os.makedirs(os.path.dirname(p), exist_ok=True)
+                with open(p, "w", encoding="utf-8") as f:
+                    f.write(targs["content"])
+    if "Wiki Maintainer" in prompt:
+        m = re.search(r"WORKSPACE: (\S+)", prompt)
+        if m:
+            p = os.path.join(m.group(1), "wiki", "patterns", "fake-pattern.md")
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write("# fake pattern\nPROBLEM: format. FIX: follow the house convention.\n")
+            calls.append(call("write_file", {"path": p}))
+        return calls, "wiki updated"
+    if "Skill Proposer" in prompt:
+        m = re.search(r"Write your proposal JSON to: (\S+)", prompt)
+        raw = os.environ.get("FAKE_HERMES_PROPOSAL")
+        if m and raw != "none":
+            proposal = json.loads(raw) if raw else {
+                "action": "create", "name": "house-report",
+                "skill_md": "---\nname: house-report\ndescription: ACME house report format conventions\n---\n"
+                            "# House report\n1. FAKE-SOLVE: write the expected report.\n",
+                "purpose_md": "fake"}
+            os.makedirs(os.path.dirname(m.group(1)), exist_ok=True)
+            with open(m.group(1), "w", encoding="utf-8") as f:
+                f.write(proposal if isinstance(proposal, str) else json.dumps(proposal))
+            calls.append(call("write_file", {"path": m.group(1)}))
+        return calls, "proposal written"
+    cheat = os.environ.get("FAKE_HERMES_CHEAT")  # D19: read the answer key, like the host receipt
+    if cheat:
+        calls.append(call("read_file", {"path": cheat}))
+    solver = next((s for s in visible if "FAKE-SOLVE" in s["text"]), None)
+    if solver:
+        calls.append(call("skill_view", {"name": solver["name"]}))
+    answers_path = os.environ.get("FAKE_HERMES_ANSWERS")
+    if workdir and answers_path and (solver or cheat or os.environ.get("FAKE_HERMES_ALWAYS_SOLVE")):
+        answers = json.load(open(answers_path, encoding="utf-8"))
+        # the task id appears in the prompt (sandboxes are anonymous rollout dirs, D19)
+        tid = max((k for k in answers if re.search(r"\b" + re.escape(k) + r"\b", prompt)), key=len,
+                  default=os.path.basename(os.path.normpath(workdir)))
+        for rel, content in answers.get(tid, {}).items():
+            with open(os.path.join(workdir, rel), "w", encoding="utf-8") as f:
+                f.write(content)
+            calls.append(call("write_file", {"path": os.path.join(workdir, rel)}))
+    elif workdir:
+        with open(os.path.join(workdir, "report.txt"), "w", encoding="utf-8") as f:
+            f.write("a naive report\n")
+        calls.append(call("write_file", {"path": "report.txt"}))
+    return calls, "done"
+
+
+def cmd_chat(argv):
+    if argv[:1] == ["--help"] or argv[:1] == ["-h"]:
+        chat_parser().print_help()
+        return 0
+    h = home()
+    args = chat_parser().parse_args(argv)  # exit 2 on unknown flags
+    forced = os.environ.get("FAKE_HERMES_EXIT")
+    if forced == "2":
+        print("hermes: error: unrecognized arguments: --forced", file=sys.stderr)
+        return 2
+    prompt = args.query
+    if getattr(args, "query_file", None):
+        prompt = open(args.query_file, encoding="utf-8").read()
+    workdir = getattr(args, "in_dir", None) or os.getcwd()
+    BASE[0] = workdir
+    if os.environ.get("FAKE_HERMES_SLEEP"):  # T9 R1-18: a long run the caller can SIGTERM
+        with open(os.environ["FAKE_HERMES_PIDFILE"], "w") as f:
+            f.write(str(os.getpid()))
+        time.sleep(float(os.environ["FAKE_HERMES_SLEEP"]))
+    skills = read_skills(h)
+    enabled = skills_enabled(h, getattr(args, "toolsets", None))
+    system = "You are Hermes.\n" + (render_index(skills) if enabled and skills else "")
+    visible = skills if enabled else []
+    messages = [{"role": "user", "content": prompt}]
+    calls, final = act(prompt or "", workdir if "WORKING DIRECTORY" in (prompt or "") else None,
+                       visible, messages)
+    if calls:
+        messages.append({"role": "assistant", "content": "", "tool_calls": calls})
+        texts = {sk["name"]: sk["text"] for sk in visible}
+
+        def result(c):  # like Hermes: skill_view returns the skill's text (QA-F6)
+            if c["function"]["name"] == "skill_view":
+                name = json.loads(c["function"]["arguments"]).get("name")
+                return json.dumps({"success": True, "name": name, "content": texts.get(name, "")})
+            if c["function"]["name"] == "read_file":
+                path = json.loads(c["function"]["arguments"]).get("path", "")
+                try:
+                    return json.dumps({"success": True, "content": open(path, encoding="utf-8").read()})
+                except OSError as e:
+                    return json.dumps({"success": False, "error": str(e)})
+            if c["function"]["name"] == "patch":  # T10g: like Hermes, the result echoes the patched file
+                path = json.loads(c["function"]["arguments"]).get("path", "")
+                try:
+                    text = open(os.path.join(BASE[0], path), encoding="utf-8").read()
+                    return json.dumps({"success": True, "diff": text})
+                except OSError as e:
+                    return json.dumps({"success": False, "error": str(e)})
+            if c["function"]["name"] == "terminal":  # T10g: `cat <file>` returns the file (live F26/F27 shape)
+                cmd = json.loads(c["function"]["arguments"]).get("command", "").strip()
+                m = re.fullmatch(r"cat ([^\s;|&<>]+)", cmd)
+                if m:
+                    try:
+                        text = open(os.path.join(BASE[0], m.group(1)), encoding="utf-8").read()
+                        return json.dumps({"output": text, "exit_code": 0})
+                    except OSError as e:
+                        return json.dumps({"output": str(e), "exit_code": 1})
+            return "{\"success\": true}"
+        messages += [{"role": "tool", "tool_call_id": c["id"], "tool_name": c["function"]["name"],
+                      "content": result(c)} for c in calls]
+    messages.append({"role": "assistant", "content": final})
+    sid = time.strftime("%Y%m%d_%H%M%S_") + uuid.uuid4().hex[:8]
+    cost = float(os.environ.get("FAKE_HERMES_COST", "0.001"))
+    session = {"id": sid, "source": "oneshot", "model": args.model or "fake-model",
+               "system_prompt": system, "messages": messages,
+               "message_count": len(messages), "tool_call_count": len(calls),
+               "input_tokens": 1000, "output_tokens": 100, "api_call_count": 1 + len(calls),
+               "estimated_cost_usd": cost, "actual_cost_usd": None, "cost_status": "estimated"}
+    store = os.path.join(h, "fake-state")
+    os.makedirs(store, exist_ok=True)
+    with open(os.path.join(store, sid + ".json"), "w", encoding="utf-8") as f:
+        json.dump(session, f)
+    print(final)
+    if args.quiet:
+        print(f"session_id: {sid}", file=sys.stderr)
+    else:
+        print(f"session_id: {sid}")
+    rexit = os.environ.get("FAKE_HERMES_ROLE_EXIT", "")
+    if ":" in rexit and rexit.split(":", 1)[0] == role_of(prompt or ""):
+        return int(rexit.split(":", 1)[1])
+    return int(forced) if forced else 0
+
+
+def cmd_sessions(argv):
+    h = home()
+    store = os.path.join(h, "fake-state")
+    ids = sorted((f[:-5] for f in os.listdir(store) if f.endswith(".json")), reverse=True) \
+        if os.path.isdir(store) else []
+    if argv[:1] == ["list"]:
+        print("Title  Preview  ID")
+        for i in ids:
+            print(f"t  p  {i}")
+        return 0
+    if argv[:1] == ["export"]:
+        p = argparse.ArgumentParser()
+        p.add_argument("--format")
+        p.add_argument("--session-id")
+        p.add_argument("out")
+        a = p.parse_args(argv[1:])
+        match = [i for i in ids if i.startswith(a.session_id or "")]
+        if len(match) != 1:
+            print("Session not found.")
+            return 0
+        with open(os.path.join(store, match[0] + ".json"), encoding="utf-8") as f:
+            session = json.load(f)
+        with open(a.out, "w", encoding="utf-8") as f:
+            f.write(json.dumps(session) + "\n")
+        return 0
+    return 2
+
+
+def main():
+    argv = sys.argv[1:]
+    log()
+    if argv[:1] in (["--version"], ["-V"]):
+        print("Hermes Agent v0.21.3 (fake)")
+        return 0
+    if argv[:1] == ["chat"]:
+        return cmd_chat(argv[1:])
+    if argv[:1] == ["sessions"]:
+        return cmd_sessions(argv[1:])
+    if argv[:2] == ["skills", "opt-out"]:
+        home()
+        return 0
+    print(f"fake-hermes: unsupported {argv}", file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

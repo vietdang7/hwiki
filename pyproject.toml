@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-wikiskill"
+version = "0.2.0"
+description = "WikiSkill (arXiv:2608.27454) for Hermes Agent, hardened: visible skills, pure dry-runs, minimal credentials, held-out eval"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+# wikiskill==0.1.5 is the stock upstream: tests import it ONLY to prove that each
+# defect fails there (strict xfail parameters); the framework never imports it.
+test = ["pytest>=7", "wikiskill==0.1.5", "setuptools>=64"]
+
+[project.scripts]
+hermes-wikiskill = "hermes_wikiskill.cli:main"
+hws = "hermes_wikiskill.cli:main"
+
+[project.urls]
+Upstream = "https://github.com/ashutoshsinghpr7/wikiskill"
+arXiv = "https://arxiv.org/abs/2608.27454"
+
+[tool.setuptools.packages.find]
+include = ["hermes_wikiskill*"]
+
+[tool.setuptools.package-data]
+hermes_wikiskill = ["data/**/*", "templates/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,142 @@
+[
+  {
+    "id": "test-sales-01",
+    "split": "test",
+    "title": "ACME sales summary 01",
+    "prompt": "Create report.txt for report id test-sales-01, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\ntest-sales-01-r04,East,240263,posted\ntest-sales-01-r06,West,240663,posted\ntest-sales-01-r01,North,240563,posted\ntest-sales-01-r05,West,240963,posted\ntest-sales-01-r02,North,241063,posted\ntest-sales-01-r07,East,242963,void\ntest-sales-01-r03,East,241163,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "5a1e9429563692d0f269d40e75069729b3473e3c5da4c2be06314842b7aecdcf"
+    }
+  },
+  {
+    "id": "test-sales-02",
+    "split": "test",
+    "title": "ACME sales summary 02",
+    "prompt": "Create report.txt for report id test-sales-02, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\ntest-sales-02-r02,North,246043,posted\ntest-sales-02-r06,West,245643,posted\ntest-sales-02-r05,West,245943,posted\ntest-sales-02-r07,East,247943,void\ntest-sales-02-r01,North,245543,posted\ntest-sales-02-r03,East,246143,posted\ntest-sales-02-r04,East,245243,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "01db5cf973156e8de7335236a84522509eaf84a07f945a6f171625ed7a7064b5"
+    }
+  },
+  {
+    "id": "test-sales-03",
+    "split": "test",
+    "title": "ACME sales summary 03",
+    "prompt": "Create report.txt for report id test-sales-03, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\ntest-sales-03-r06,West,250552,posted\ntest-sales-03-r03,East,251052,posted\ntest-sales-03-r02,North,250952,posted\ntest-sales-03-r07,East,252852,void\ntest-sales-03-r01,North,250452,posted\ntest-sales-03-r05,West,250852,posted\ntest-sales-03-r04,East,250152,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "2b3ca378af63691fcf1f210b5a4e9c843e03958c7e890b4bbfc867486e3dd6e0"
+    }
+  },
+  {
+    "id": "test-sales-04",
+    "split": "test",
+    "title": "ACME sales summary 04",
+    "prompt": "Create report.txt for report id test-sales-04, following the ACME house report format. Summarize the sales by region from sales.csv. Return only the report contents.",
+    "sandbox": {
+      "sales.csv": "record_id,region,amount_cents,status\ntest-sales-04-r05,West,256007,posted\ntest-sales-04-r02,North,256107,posted\ntest-sales-04-r04,East,255307,posted\ntest-sales-04-r07,East,258007,void\ntest-sales-04-r06,West,255707,posted\ntest-sales-04-r03,East,256207,posted\ntest-sales-04-r01,North,255607,posted\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "31227d7ae9b98f4b9d598b0ec236686674b92a07707ffbc5cb38a4858da9ab56"
+    }
+  },
+  {
+    "id": "test-expenses-01",
+    "split": "test",
+    "title": "ACME expenses summary 01",
+    "prompt": "Create report.txt for report id test-expenses-01, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"test-expenses-01-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 260507,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-01-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 261107,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-01-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 261007,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-01-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 260207,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-01-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 262907,\n      \"status\": \"void\"\n    },\n    {\n      \"record_id\": \"test-expenses-01-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 260607,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-01-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 260907,\n      \"status\": \"approved\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "7036bc98964d2be9aa9d5104639a9f6c808fb1d584ac81331c4c17ca23d61e19"
+    }
+  },
+  {
+    "id": "test-expenses-02",
+    "split": "test",
+    "title": "ACME expenses summary 02",
+    "prompt": "Create report.txt for report id test-expenses-02, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"test-expenses-02-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 265529,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-02-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 266029,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-02-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 265829,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-02-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 265929,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-02-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 267829,\n      \"status\": \"void\"\n    },\n    {\n      \"record_id\": \"test-expenses-02-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 265429,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-02-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 265129,\n      \"status\": \"approved\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "c5c5dac00fa059c5912fc1602ca83f40abdf2ec298437b37c68a4314d13da958"
+    }
+  },
+  {
+    "id": "test-expenses-03",
+    "split": "test",
+    "title": "ACME expenses summary 03",
+    "prompt": "Create report.txt for report id test-expenses-03, following the ACME house report format. Summarize the expenses by category from expenses.json. Return only the report contents.",
+    "sandbox": {
+      "expenses.json": "{\n  \"expenses\": [\n    {\n      \"record_id\": \"test-expenses-03-r02\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 270916,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-03-r05\",\n      \"category\": \"Software\",\n      \"amount_cents\": 270816,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-03-r01\",\n      \"category\": \"Travel\",\n      \"amount_cents\": 270416,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-03-r07\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 272816,\n      \"status\": \"void\"\n    },\n    {\n      \"record_id\": \"test-expenses-03-r04\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 270116,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-03-r06\",\n      \"category\": \"Software\",\n      \"amount_cents\": 270516,\n      \"status\": \"approved\"\n    },\n    {\n      \"record_id\": \"test-expenses-03-r03\",\n      \"category\": \"Meals\",\n      \"amount_cents\": 271016,\n      \"status\": \"approved\"\n    }\n  ]\n}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "ea99123def6a97aaf72059f7cf48896c9552bcb8f74bd0886d2ab1fa4e624daa"
+    }
+  },
+  {
+    "id": "test-orders-01",
+    "split": "test",
+    "title": "ACME orders summary 01",
+    "prompt": "Create report.txt for report id test-orders-01, following the ACME house report format. Summarize the orders by team from orders.jsonl. Return only the report contents.",
+    "sandbox": {
+      "orders.jsonl": "{\"amount_cents\": 275930, \"record_id\": \"test-orders-01-r02\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 275130, \"record_id\": \"test-orders-01-r04\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 275430, \"record_id\": \"test-orders-01-r01\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 275530, \"record_id\": \"test-orders-01-r06\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 277830, \"record_id\": \"test-orders-01-r07\", \"status\": \"void\", \"team\": \"Gold\"}\n{\"amount_cents\": 276030, \"record_id\": \"test-orders-01-r03\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 275830, \"record_id\": \"test-orders-01-r05\", \"status\": \"complete\", \"team\": \"Red\"}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "b08af93f41e52d7651b593e3067bb52bdd5ce43c84ca312af94a111135152c66"
+    }
+  },
+  {
+    "id": "test-orders-02",
+    "split": "test",
+    "title": "ACME orders summary 02",
+    "prompt": "Create report.txt for report id test-orders-02, following the ACME house report format. Summarize the orders by team from orders.jsonl. Return only the report contents.",
+    "sandbox": {
+      "orders.jsonl": "{\"amount_cents\": 280519, \"record_id\": \"test-orders-02-r01\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 282919, \"record_id\": \"test-orders-02-r07\", \"status\": \"void\", \"team\": \"Gold\"}\n{\"amount_cents\": 280619, \"record_id\": \"test-orders-02-r06\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 281119, \"record_id\": \"test-orders-02-r03\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 280919, \"record_id\": \"test-orders-02-r05\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 280219, \"record_id\": \"test-orders-02-r04\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 281019, \"record_id\": \"test-orders-02-r02\", \"status\": \"complete\", \"team\": \"Blue\"}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "e3e28b8cba6df806cb8edec2a0a0b2b6fdf5446a2b95b3021ba5bb2be0ccdb34"
+    }
+  },
+  {
+    "id": "test-orders-03",
+    "split": "test",
+    "title": "ACME orders summary 03",
+    "prompt": "Create report.txt for report id test-orders-03, following the ACME house report format. Summarize the orders by team from orders.jsonl. Return only the report contents.",
+    "sandbox": {
+      "orders.jsonl": "{\"amount_cents\": 285154, \"record_id\": \"test-orders-03-r04\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 287854, \"record_id\": \"test-orders-03-r07\", \"status\": \"void\", \"team\": \"Gold\"}\n{\"amount_cents\": 285854, \"record_id\": \"test-orders-03-r05\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 285454, \"record_id\": \"test-orders-03-r01\", \"status\": \"complete\", \"team\": \"Blue\"}\n{\"amount_cents\": 286054, \"record_id\": \"test-orders-03-r03\", \"status\": \"complete\", \"team\": \"Gold\"}\n{\"amount_cents\": 285554, \"record_id\": \"test-orders-03-r06\", \"status\": \"complete\", \"team\": \"Red\"}\n{\"amount_cents\": 285954, \"record_id\": \"test-orders-03-r02\", \"status\": \"complete\", \"team\": \"Blue\"}\n"
+    },
+    "grader": {
+      "type": "exact",
+      "file": "report.txt",
+      "expected_sha256": "2fcb580bce375c2a24850c43d4a9ecce79f0e8569c2c4271f5955faf895bc9b9"
+    }
+  }
+]
